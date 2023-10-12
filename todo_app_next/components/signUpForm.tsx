@@ -1,8 +1,11 @@
 "use client";
-import { auth } from "@/app/firebase";
+import { auth, db } from "@/app/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+
+
 
 export default function SignUpForm() {
   const [credentials, setCredentials] = useState({
@@ -25,7 +28,14 @@ export default function SignUpForm() {
       credentials.email,
       credentials.password
     )
-      .then(() => {
+      .then(async (userData) => {
+        console.log(userData.user.uid)
+        await setDoc(doc(db, "users", userData.user.uid), {
+          email: userData.user.email,
+          emailVerified: userData.user.emailVerified,
+          name: userData.user.displayName,
+          image: ""
+        })
         router.push("/signin");
       })
       .catch((error) => {
@@ -78,7 +88,7 @@ export default function SignUpForm() {
         SIGN UP
       </button>
       {error ? (
-        <span className="text-red-500">Something is not right</span>
+        <span className="text-red-500">{error}</span>
       ) : null}
     </form>
   );

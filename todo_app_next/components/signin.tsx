@@ -2,7 +2,6 @@ import React from 'react'
 import RedirectSection from './redirectSection';
 import SignInForm from './signInForm';
 
-
 export default function Login() {
 
   return (
